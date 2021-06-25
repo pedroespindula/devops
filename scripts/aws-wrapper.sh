@@ -1,11 +1,15 @@
 OWNER=pedro
 
 aws-ec2-ls() {
-  aws ec2 describe-instances --query "Reservations[].Instances[].{Name: Tags[?Key=='Name']|[0].Value, Id: InstanceId, Status: State.Name, Ip: NetworkInterfaces[0].PrivateIpAddress}" "$@"
+  aws ec2 describe-instances --query "Reservations[].Instances[].{Name: Tags[?Key=='Name']|[0].Value, Id: InstanceId, Status: State.Name, Ip: NetworkInterfaces[0].PrivateIpAddress, LastStarted: LaunchTime, Tags: Tags}" "$@"
 }
 
 aws-ec2-ls-all() {
   aws ec2 describe-instances "$@" | jq
+}
+
+aws-ec2-ls-running() {
+  aws-ec2-ls --filters Name=instance-state-name,Values=running
 }
 
 aws-ec2-ls-user() {
