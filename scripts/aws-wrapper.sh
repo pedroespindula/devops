@@ -28,6 +28,22 @@ aws-ec2-ls-user() {
   aws-ec2-ls --filters Name=tag:User,Values="$@" 
 }
 
+aws-ec2-ls-service() {
+  aws-ec2-ls --filters Name=tag:Service,Values="$@" 
+}
+
+aws-ec2-ls-service-ids() {
+  aws-ec2-ls-service "$@" | jq --raw-output '.[].Id' | tr "\n" " "
+}
+
+aws-ec2-start-service() {
+  aws-ec2-start $(aws-ec2-ls-service-ids "$@")
+}
+
+aws-ec2-stop-service() {
+  aws-ec2-stop $(aws-ec2-ls-service-ids "$@")
+}
+
 aws-ec2-ls-mine() {
   aws-ec2-ls-user $OWNER "$@" 
 }
